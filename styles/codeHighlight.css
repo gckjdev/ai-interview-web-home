@@ -1,0 +1,202 @@
+/* 用于代码高亮的样式 */
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  background: #282c34;
+  color: #abb2bf;
+  border-radius: 0.5rem;
+}
+
+.hljs-keyword,
+.hljs-operator {
+  color: #c678dd;
+}
+
+.hljs-pattern-match {
+  color: #c678dd;
+}
+
+.hljs-pattern-match .hljs-constructor {
+  color: #61aeee;
+}
+
+.hljs-function {
+  color: #61aeee;
+}
+
+.hljs-function .hljs-params {
+  color: #a6e22e;
+}
+
+.hljs-function .hljs-params .hljs-typing {
+  color: #fd971f;
+}
+
+.hljs-module-access .hljs-module {
+  color: #7e57c2;
+}
+
+.hljs-constructor {
+  color: #e2b93d;
+}
+
+.hljs-constructor .hljs-string {
+  color: #9ccc65;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #5c6370;
+  font-style: italic;
+}
+
+.hljs-doctag,
+.hljs-formula {
+  color: #c678dd;
+}
+
+.hljs-deletion,
+.hljs-name,
+.hljs-section,
+.hljs-selector-tag,
+.hljs-subst {
+  color: #e06c75;
+}
+
+.hljs-literal {
+  color: #56b6c2;
+}
+
+.hljs-addition,
+.hljs-attribute,
+.hljs-meta .hljs-string,
+.hljs-regexp,
+.hljs-string {
+  color: #98c379;
+}
+
+.hljs-built_in,
+.hljs-class .hljs-title,
+.hljs-title.class_ {
+  color: #e6c07b;
+}
+
+.hljs-attr,
+.hljs-number,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-pseudo,
+.hljs-template-variable,
+.hljs-type,
+.hljs-variable {
+  color: #d19a66;
+}
+
+.hljs-bullet,
+.hljs-link,
+.hljs-meta,
+.hljs-selector-id,
+.hljs-symbol,
+.hljs-title {
+  color: #61aeee;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+pre {
+  position: relative;
+  padding: 1em;
+  background: #282c34;
+  border-radius: 0.5rem;
+  margin: 0.75em 0;
+}
+
+pre code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+/* 自定义Markdown样式 */
+.markdown-content {
+  line-height: 1.5;
+  font-size: 0.875rem; /* 等于Chakra UI的sm尺寸 */
+}
+
+/* 减小标题大小 */
+.markdown-content h1 {
+  font-size: 1.5rem;
+}
+
+.markdown-content h2 {
+  font-size: 1.25rem;
+}
+
+.markdown-content h3 {
+  font-size: 1.125rem;
+}
+
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  font-size: 1rem;
+}
+
+/* 调整代码字体大小 */
+.markdown-content code {
+  font-size: 0.8rem;
+}
+
+.markdown-content p {
+  margin-bottom: 0.75em;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  padding-left: 1.5em;
+  margin-bottom: 0.75em;
+}
+
+.markdown-content blockquote {
+  padding-left: 1em;
+  border-left: 3px solid #e2e8f0;
+  color: #4a5568;
+  margin: 0.75em 0;
+}
+
+/* 基本代码块样式，不使用高亮 */
+.markdown-content pre {
+  background-color: #f6f8fa;
+  border-radius: 0.5rem;
+  padding: 1em;
+  overflow-x: auto;
+  margin: 0.75em 0;
+}
+
+.markdown-content pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+.markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.75em 0;
+}
+
+.markdown-content table th,
+.markdown-content table td {
+  border: 1px solid #e2e8f0;
+  padding: 0.5em;
+}
+
+.markdown-content table th {
+  background-color: #f7fafc;
+} 
