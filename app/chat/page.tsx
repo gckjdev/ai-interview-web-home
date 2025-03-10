@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useSearchParams } from 'next/navigation';
 import { 
   Box, 
   Container, 
@@ -17,10 +18,17 @@ import {
   useToast
 } from "@chakra-ui/react";
 import { FiSend, FiUser, FiRefreshCw } from "react-icons/fi";
-import { Message, InterviewSession } from "@/types/chat";
+import { Message, InterviewSession, TestInfo } from "@/types/chat";
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 
 export default function ChatPage() {
+  // 获取URL参数
+  const searchParams = useSearchParams();
+  const activationCode = searchParams.get('code');
+  
+  // 测试信息
+  const [testInfo, setTestInfo] = useState<TestInfo | null>(null);
+  
   // 聊天消息列表
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -59,12 +67,39 @@ export default function ChatPage() {
     setIsClient(true);
   }, []);
 
-  // 页面加载时自动开始面试
+  // 页面加载时获取测试信息并开始面试
   useEffect(() => {
     if (isClient) {
-      startInterview();
+      if (activationCode) {
+        // 如果有激活码，先获取测试信息
+        getTestInfo(activationCode);
+      } else {
+        // 如果没有激活码，显示错误信息
+        const errorMsg: Message = {
+          id: `error_${Date.now()}`,
+          role: "assistant",
+          content: "缺少激活码，请使用正确的链接访问面试。",
+          timestamp: new Date().toISOString(),
+        };
+        setMessages([errorMsg]);
+        
+        toast({
+          title: "无法开始面试",
+          description: "缺少激活码，请使用正确的链接访问面试。",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
     }
   }, [isClient]);
+  
+  // 当测试信息获取成功后自动开始面试
+  useEffect(() => {
+    if (testInfo) {
+      startInterview();
+    }
+  }, [testInfo]);
 
   // 自动滚动到最新消息
   const scrollToBottom = () => {
@@ -75,14 +110,69 @@ export default function ChatPage() {
     scrollToBottom();
   }, [messages]);
 
+  // 获取测试信息
+  const getTestInfo = async (code: string) => {
+    console.log(`[${new Date().toISOString()}] 开始获取测试信息, 激活码:`, code);
+    
+    try {
+      const response = await fetch(`/api/test?code=${code}`);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: '未知错误' }));
+        console.error(`[${new Date().toISOString()}] 获取测试信息失败:`, errorData);
+        
+        // 显示更友好的错误信息
+        let errorMessage = errorData.error || "无法获取测试信息";
+        if (errorData.error?.includes("不存在")) {
+          errorMessage = "该测试不存在，请确认激活码是否正确。";
+        } else if (errorData.error?.includes("已完成")) {
+          errorMessage = "该测试已完成，无法再次参加。";
+        }
+        
+        const errorMsg: Message = {
+          id: `error_${Date.now()}`,
+          role: "assistant",
+          content: errorMessage,
+          timestamp: new Date().toISOString(),
+        };
+        setMessages([errorMsg]);
+        
+        toast({
+          title: "无法开始面试",
+          description: errorMessage,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+        
+        throw new Error(errorMessage);
+      }
+      
+      const data = await response.json();
+      console.log(`[${new Date().toISOString()}] 获取测试信息成功:`, {
+        test_id: data.test_id,
+        job_title: data.job_title,
+        user_name: data.user_name
+      });
+      
+      setTestInfo(data);
+    } catch (error) {
+      console.error(`[${new Date().toISOString()}] 获取测试信息错误:`, error);
+    }
+  };
+
   // 开始面试
   const startInterview = async () => {
     console.log(`[${new Date().toISOString()}] 前端开始调用开始面试API`);
     setIsLoading(true);
 
     try {
-      // 硬编码面试参数
-      const jobTitle = "前端开发工程师"; // 默认职位
+      // 使用测试信息而不是硬编码数据
+      if (!testInfo) {
+        throw new Error("缺少测试信息");
+      }
+      
+      const jobTitle = testInfo.job_title;
       console.log(`[${new Date().toISOString()}] 面试职位:`, jobTitle);
       
       // 调用API开始面试
@@ -91,7 +181,15 @@ export default function ChatPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ job_title: jobTitle }),
+        body: JSON.stringify({ 
+          test_id: testInfo.test_id,
+          user_id: testInfo.user_id,
+          job_title: jobTitle,
+          examination_points: testInfo.examination_points.join(', '),
+          test_time: testInfo.test_time,
+          language: testInfo.language,
+          difficulty: testInfo.difficulty
+        }),
       });
 
       console.log(`[${new Date().toISOString()}] 开始面试API响应状态:`, response.status);

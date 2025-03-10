@@ -15,18 +15,34 @@ export async function POST(request: Request) {
   console.log(`[${new Date().toISOString()}] 开始面试API调用开始`);
   
   try {
-    // 安全地尝试解析请求体，如果为空则提供默认值
-    let job_title = "前端开发工程师"; // 默认职位
+    // 解析请求体
+    let requestBody = {
+      user_id: 'user_' + Date.now().toString(),
+      test_id: 'test_' + Date.now().toString(),
+      job_title: "前端开发工程师",
+      examination_points: "React, JavaScript, TypeScript, Web基础知识",
+      test_time: 3,
+      language: "Chinese",
+      difficulty: "easy"
+    };
     
     try {
       const body = await request.json();
-      // 如果请求体包含job_title，则使用它
-      if (body && body.job_title) {
-        job_title = body.job_title;
-      }
-      console.log(`[${new Date().toISOString()}] 请求参数:`, { job_title });
+      // 合并请求体数据，优先使用传入的数据
+      requestBody = {
+        ...requestBody,
+        ...body
+      };
+      
+      console.log(`[${new Date().toISOString()}] 请求参数:`, {
+        user_id: requestBody.user_id,
+        test_id: requestBody.test_id,
+        job_title: requestBody.job_title,
+        language: requestBody.language,
+        difficulty: requestBody.difficulty
+      });
     } catch (e) {
-      console.log(`[${new Date().toISOString()}] 请求体解析失败，使用默认职位:`, job_title);
+      console.log(`[${new Date().toISOString()}] 请求体解析失败，使用默认参数`);
       // 使用默认值继续
     }
     
@@ -36,18 +52,6 @@ export async function POST(request: Request) {
     
     try {
       console.log(`[${new Date().toISOString()}] 调用外部API: ${API_BASE_URL}/chat/start`);
-      
-      const requestBody = {
-        user_id: 'user_' + Date.now().toString(),
-        test_id: 'test_' + Date.now().toString(),
-        job_title: job_title,
-        examination_points: "React, JavaScript, TypeScript, Web基础知识",
-        test_time: 3,
-        language: "Chinese",
-        difficulty: "easy"
-      };
-      
-      console.log(`[${new Date().toISOString()}] 请求体:`, requestBody);
       
       // 调用外部API开始面试
       const response = await fetch(`${API_BASE_URL}/chat/start`, {
