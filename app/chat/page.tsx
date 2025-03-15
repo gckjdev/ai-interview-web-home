@@ -434,8 +434,8 @@ export default function ChatPage() {
         <Flex 
           p={4} 
           borderBottom="1px" 
-          borderColor={borderColor}
-          bg="blue.500"
+          borderColor="gray.200"
+          bg="brand.500"
           color="white"
           align="center"
           justify="space-between"
@@ -468,16 +468,16 @@ export default function ChatPage() {
             >
               <Flex align="center" mb={1}>
                 {msg.role === "assistant" ? (
-                  <Avatar size="xs" bg="blue.500" mr={2} />
+                  <Avatar size="xs" bg="brand.500" mr={2} />
                 ) : (
-                  <Avatar size="xs" icon={<FiUser />} bg="green.500" mr={2} />
+                  <Avatar size="xs" icon={<FiUser />} bg="gray.500" color="white" mr={2} />
                 )}
                 <Text fontSize="xs" color="gray.500">
                   {msg.role === "user" ? "你" : "AI面试官"} {isClient && `· ${formatTime(msg.timestamp)}`}
                 </Text>
               </Flex>
               <Box
-                bg={msg.role === "user" ? "blue.500" : "gray.100"}
+                bg={msg.role === "user" ? "brand.500" : "gray.100"}
                 color={msg.role === "user" ? "white" : "black"}
                 p={3}
                 borderRadius="lg"
@@ -496,7 +496,7 @@ export default function ChatPage() {
           {isLoading && (
             <Flex alignSelf="flex-start" maxW="80%" direction="column">
               <Flex align="center" mb={1}>
-                <Avatar size="xs" bg="blue.500" mr={2} />
+                <Avatar size="xs" bg="brand.500" mr={2} />
                 <Text fontSize="xs" color="gray.500">
                   AI面试官正在思考...
                 </Text>
@@ -507,7 +507,7 @@ export default function ChatPage() {
                 borderRadius="lg"
                 boxShadow="sm"
               >
-                <Spinner size="sm" color="blue.500" />
+                <Spinner size="sm" color="brand.500" />
               </Box>
             </Flex>
           )}
@@ -519,8 +519,8 @@ export default function ChatPage() {
         <Flex 
           p={4} 
           borderTop="1px" 
-          borderColor={borderColor}
-          bg={cardBgColor}
+          borderColor="gray.200"
+          bg="white"
         >
           <Input
             flex="1"
@@ -532,7 +532,7 @@ export default function ChatPage() {
             disabled={isLoading || !session}
           />
           <Button
-            colorScheme="blue"
+            colorScheme="brand"
             onClick={sendMessage}
             isLoading={isLoading}
             leftIcon={<FiSend />}
