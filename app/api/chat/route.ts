@@ -88,8 +88,8 @@ export async function POST(request: Request) {
         message: apiResponse.message,
         question_id: apiResponse.data.question_id,
         type: apiResponse.data.type,
-        // 不打印完整问题内容，避免日志过长
-        feedback_preview: apiResponse.data.feedback ? apiResponse.data.feedback.substring(0, 50) + '...' : 'No feedback'
+        is_over: apiResponse.data.is_over,
+        qa_history_length: apiResponse.data.qa_history?.length || 0
       });
       
       // 根据新的API响应结构，创建更贴近UI需要的响应
@@ -97,7 +97,9 @@ export async function POST(request: Request) {
         user_id: requestBody.user_id,
         test_id: requestBody.test_id,
         question_id: apiResponse.data.question_id,
-        question: apiResponse.data.feedback // 使用feedback作为问题内容
+        question: apiResponse.data.feedback, // 使用feedback作为问题内容
+        is_over: apiResponse.data.is_over,
+        qa_history: apiResponse.data.qa_history || []
       };
       
       console.log(`[${new Date().toISOString()}] 开始面试API调用完成`);

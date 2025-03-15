@@ -204,8 +204,30 @@ export default function ChatPage() {
       console.log(`[${new Date().toISOString()}] 开始面试API成功:`, {
         user_id: data.user_id,
         test_id: data.test_id,
-        question_id: data.question_id
+        question_id: data.question_id,
+        is_over: data.is_over,
+        qa_history_length: data.qa_history.length
       });
+      
+      // 检查面试是否已结束
+      if (data.is_over) {
+        const errorMsg: Message = {
+          id: `error_${Date.now()}`,
+          role: "assistant",
+          content: "该面试已结束，无法继续。",
+          timestamp: new Date().toISOString(),
+        };
+        setMessages([errorMsg]);
+        
+        toast({
+          title: "面试已结束",
+          description: "该面试已结束，无法继续。",
+          status: "warning",
+          duration: 5000,
+          isClosable: true,
+        });
+        return;
+      }
       
       // 保存会话信息
       setSession({
@@ -218,6 +240,26 @@ export default function ChatPage() {
       // 清除加载消息
       setMessages([]);
       
+      // 加载历史对话消息
+      if (data.qa_history && data.qa_history.length > 0) {
+        const historyMessages = data.qa_history.map((qa, index) => ([
+          {
+            id: `q_${index}_${Date.now()}`,
+            role: "assistant",
+            content: qa.question,
+            timestamp: new Date().toISOString(),
+          },
+          {
+            id: `a_${index}_${Date.now()}`,
+            role: "user",
+            content: qa.answer,
+            timestamp: new Date().toISOString(),
+          }
+        ])).flat();
+        
+        setMessages(historyMessages);
+      }
+      
       // 添加面试官第一个问题，确保ID唯一
       const firstQuestion: Message = {
         id: `q_${data.question_id}_${Date.now()}`, // 添加时间戳确保唯一性
@@ -226,7 +268,7 @@ export default function ChatPage() {
         timestamp: new Date().toISOString(),
       };
 
-      setMessages([firstQuestion]);
+      setMessages((prev) => [...prev, firstQuestion]);
     } catch (error) {
       console.error(`[${new Date().toISOString()}] 前端开始面试出错:`, error);
       

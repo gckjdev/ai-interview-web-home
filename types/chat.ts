@@ -22,6 +22,8 @@ export interface StartChatResponseData {
   feedback: string;
   type: string;
   question_id: string;
+  qa_history?: Array<{ question: string; answer: string }>;
+  is_over: boolean;
 }
 
 export interface AnswerResponseData {
